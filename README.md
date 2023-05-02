@@ -9,6 +9,10 @@
 
 ### 安装需要的软件
 
+安装[go-cqhttp](https://docs.go-cqhttp.org/guide/quick_start.html)
+请将配置文件中你的http地址填入config.json中
+然后进入文件夹运行以安装依赖
+
 ```shell
 npm install express axios
 ```
