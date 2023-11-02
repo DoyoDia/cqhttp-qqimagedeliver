@@ -29,7 +29,7 @@ def status():
 @app.route('/', methods=['POST'])
 def handle_notification():
         # 获取请求体中的数据
-        data = request.json
+        data = json.loads(request.get_data())
         # 判断数据是否合法
         if data and 'image' in data and 'to' in data and 'info' in data:
                 # 获取图片的 base64 编码，接收QQ号或群号，和文字信息
