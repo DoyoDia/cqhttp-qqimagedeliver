@@ -1,4 +1,5 @@
 {
-    "port": 49875,
-    "go_cqhttp_url": "http://127.0.0.1:8600"
+    "port": 39875,
+    "go_cqhttp_url": "http://127.0.0.1:36801",
+    "go_cqhttp_wsurl": "ws://127.0.0.1:36800"
   }
