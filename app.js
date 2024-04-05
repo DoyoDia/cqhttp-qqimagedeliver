@@ -32,12 +32,17 @@ app.get('/status', (req, res) => {
 app.post('', async (req, res) => {
   // 获取请求体中的数据
   const data = req.body;
+  // console.log(data);
   // 判断数据是否合法
   if (data && data.image && data.to && data.info) {
     // 获取图片的 base64 编码，接收QQ号或群号，和文字信息
     const image = data.image;
     const to = data.to;
     const info = data.info;
+    // 检查 info 是否包含 "每日单抽"
+    if (!info.includes("每日单抽")) {
+      return res.json({ code: -3, msg: 'invalid data(Not a daily draw)' });
+    }
     try {
       // 构造一个 CQ 码，用于发送图片
       const cqcode = `[CQ:image,file=base64://${image}]`;
@@ -45,15 +50,15 @@ app.post('', async (req, res) => {
       const message = `${cqcode}\n${info}`;
 
     //别TM判断了，都发得了
-    await axios.post(`${go_cqhttp_url}/send_private_msg`, {
-        user_id: to,
-        message,
-    });    
+    // await axios.post(`${go_cqhttp_url}/send_private_msg`, {
+    //     user_id: to,
+    //     message,
+    // });    
     await axios.post(`${go_cqhttp_url}/send_group_msg`, {
         group_id: to,
         message,
     });
-    
+    console.log("发送成功")
 
       // 返回成功的响应
       res.json({ code: 0, msg: 'success' });
@@ -68,6 +73,7 @@ app.post('', async (req, res) => {
 });
 
 // 启动应用，监听端口号
-app.listen(port, () => {
+app.listen(port, '0.0.0.0',() => {
+  console.log(`${go_cqhttp_url}`);
   console.log(`App listening at http://localhost:${port}`);
 });
