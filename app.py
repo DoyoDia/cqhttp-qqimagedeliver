@@ -28,41 +28,42 @@ def status():
 
 @app.route('/', methods=['POST'])
 def handle_notification():
-        # 获取请求体中的数据
-        data = json.loads(request.get_data())
-        # 判断数据是否合法
-        if data and 'image' in data and 'to' in data and 'info' in data:
-                # 获取图片的 base64 编码，接收QQ号或群号，和文字信息
-                image = data['image']
-                to = data['to']
-                info = data['info']
-                if "每日单抽" not in info:
-                    return jsonify(code=-2, msg='invalid data(Not a daily draw)')
-                try:
-                        # 构造一个 CQ 码，用于发送图片
-                        cqcode = f"[CQ:image,file=base64://{image}]"
-                        # 构造一个消息内容，包含图片和文字信息
-                        message = f"{cqcode}\n{info}"
+    # 获取请求体中的数据
+    to = request.form.get('to')
+    info = request.form.get('info')
+    image = request.form.get('image')
 
-                        # 发送私信
-                        # requests.post(f"{go_cqhttp_url}/send_private_msg", json={
-                        #         'user_id': to,
-                        #         'message': message,
-                        # })
-                        # 发送群消息
-                        requests.post(f"{go_cqhttp_url}/send_group_msg", json={
-                                'group_id': to,
-                                'message': message,
-                        })
+    # 判断数据是否合法
+    if not to or not info:
+        return jsonify(code=-1, msg='invalid data(Not enough fields)')
 
-                        # 返回成功的响应
-                        return jsonify(code=0, msg='success')
-                except Exception as error:
-                        # 返回失败的响应
-                        return jsonify(code=-1, msg=str(error))
-        else:
-                # 返回无效数据的响应
-                return jsonify(code=-2, msg='invalid data')
+    if "每日单抽" not in info:
+        return jsonify(code=-2, msg='invalid data(Not a daily draw)')
+
+    try:
+        # 构造一个消息内容，包含图片（如果有的话）和文字信息
+        message = info
+        if image:
+            # 构造一个 CQ 码，用于发送图片
+            cqcode = f"[CQ:image,file=base64://{image}]"
+            message = f"{cqcode}\n{info}"
+
+        # 发送私信
+        # requests.post(f"{go_cqhttp_url}/send_private_msg", json={
+        #         'user_id': to,
+        #         'message': message,
+        # })
+        # 发送群消息
+        requests.post(f"{go_cqhttp_url}/send_group_msg", json={
+                'group_id': to,
+                'message': message,
+        })
+
+        # 返回成功的响应
+        return jsonify(code=0, msg='success')
+    except Exception as error:
+        # 返回失败的响应
+        return jsonify(code=-1, msg=str(error))
 
 if __name__ == '__main__':
         app.run(host='0.0.0.0', port=port)

@@ -1,5 +1,9 @@
 {
     "port": 39875,
     "go_cqhttp_url": "http://127.0.0.1:36801",
-    "go_cqhttp_wsurl": "ws://127.0.0.1:36800"
+    "go_cqhttp_wsurl": "ws://127.0.0.1:36800",
+    "adb_path": "",
+    "adb_address": "",
+    "device_id": "",
+    "adb_head": ""
   }
